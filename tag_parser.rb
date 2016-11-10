@@ -17,13 +17,13 @@ def tag_parser(str)
   Node.new(type, attr_hash["class"], attr_hash["id"], attr_hash["name"])
 end
 
-t = tag_parser('<div class="foo bar" id="main" name="">')
-puts t.type
-p t.classes
-p t.id
-p t.name
+# t = tag_parser('<div class="foo bar" id="main" name="">')
+# puts t.type
+# p t.classes
+# p t.id
+# p t.name
 
-v = tag_parser("<div id = 'bim'>")
-puts v.type
-p v.classes
-p v.id
+# v = tag_parser("<div id = 'bim'>")
+# puts v.type
+# p v.classes
+# p v.id
