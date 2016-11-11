@@ -19,7 +19,7 @@ end
 
 # loop or each
 # if opening tag element[0], make node
-  # set node.parent == parent_stack[-1]
+	# set node.parent == parent_stack[-1]
   # if text element[1], make text node (child)
     # append it as child to parent
   # if element[2] == nil, node is a parent --> push into parent stack
