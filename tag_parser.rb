@@ -1,4 +1,4 @@
-Node = Struct.new(:type, :classes, :id, :name)
+Node = Struct.new(:type, :classes, :id, :name, :parent, :children, :value)
 TYPE_RX = /<(.+?)( |>)/
 ATTR_RX = /([a-z_\-]+)=("|')([^'"]+)("|')/
 
