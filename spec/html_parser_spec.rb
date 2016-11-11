@@ -1,14 +1,14 @@
 require 'rspec'
-require 'HTMLParser'
+require 'html_parser'
 
 describe HTMLParser do
   let(:html) { '<html> <head> </head> <body> <p> text node </p> </body> </html>' }
   let(:parser) { HTMLParser.new(html) }
-  let(:root) { parser.html_tree }
+  let(:root) { parser.html_root }
 
   describe '#new' do
     it 'stores the dom tree as a root node' do
-      expect(parser.html_tree).to be_a(Node)
+      expect(parser.html_root).to be_a(Node)
     end
   end
 
@@ -37,6 +37,15 @@ describe HTMLParser do
     it 'correctly returns true if a node has children' do
       expect(parser.has_children?(root)).to be true
       expect(parser.has_children?(root.children[0])).to be false
+    end
+  end
+
+  describe '#descendents' do
+    it 'returns all descendents' do
+      children =  parser.descendents(root).map do |child|
+        child.type
+      end
+      expect(children.length).to eq(4)
     end
   end
 end

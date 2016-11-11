@@ -12,14 +12,17 @@ class DOMTree
   end
 
   def build_tree(html)
+    html.gsub(/\n/, '')
     nodes = html.scan(DOM_NODES)
     root = Node.new
 
     nodes.each do |arr|
-      root = build_node(arr)
+      print arr
+      build_node(arr)
     end
 
-    @root = root # return root of dom
+    @root # return root of dom
+    # @root
   end
 
   private

@@ -1,12 +1,12 @@
 Node = Struct.new(:type, :classes, :id, :name, :parent, :children, :value)
-require_relative 'DOMTree'
+require_relative 'dom_tree'
 
 class HTMLParser
-  attr_reader :html_tree
+  attr_reader :html_root
 
   def initialize(html)
     @dom_tree = DOMTree.new
-    @html_tree = @dom_tree.build_tree(html)
+    @html_root = @dom_tree.build_tree(html)
     @parent_stack = []
     @children_stack = []
   end
@@ -17,16 +17,17 @@ class HTMLParser
     begin
       if has_children?(node) || node.type == 'html'
         @parent_stack << node
-        collect_children(node)
+        stack_children(node)
       end
       if !has_children?(node)
         output_close_tag(node) if node.type && node.type != 'text'
       end
-      if node.parent != @children_stack[-1].parent
-        output_close_tag(node.parent)
+
+      current_node = @children_stack.pop
+      unless descendents(@parent_stack[-1]).include?(current_node)
+        output_close_tag(node.parent) if node.parent
         @parent_stack.pop
       end
-      current_node = @children_stack.pop
       if !!current_node
         outputter(current_node)
       else
@@ -40,7 +41,16 @@ class HTMLParser
     !!node.children && !node.children.empty?
   end
 
-  def collect_children(parent)
+  def descendents(parent, all_descendents = [])
+    return if parent.children.nil?
+    parent.children.each do |child|
+      all_descendents << child
+      descendents(child, all_descendents)
+    end
+    all_descendents
+  end
+
+  def stack_children(parent)
     (parent.children.length - 1).downto(0) do |index|
       @children_stack << parent.children[index]
     end
@@ -62,7 +72,7 @@ class HTMLParser
   end
 
   def output_close_tag(node)
-    # puts "</#{node.type}>" if node.type
-    puts 'closed'
+    puts "</#{node.type}>" if node.type
+    # puts 'closed'
   end
 end

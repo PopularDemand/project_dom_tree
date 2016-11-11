@@ -1,5 +1,5 @@
 require 'rspec'
-require 'DOMTree'
+require 'dom_tree'
 
 describe DOMTree do 
 
