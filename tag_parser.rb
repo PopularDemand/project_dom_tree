@@ -17,7 +17,9 @@ def tag_parser(str)
   Node.new(type, attr_hash["class"], attr_hash["id"], attr_hash["name"])
 end
 
-# t = tag_parser('<div class="foo bar" id="main" name="">')
+t = tag_parser('<div class="foo bar" id="main" name="">')
+p '<div class="foo bar" id="main" name="">'.match(TYPE_RX)
+
 # puts t.type
 # p t.classes
 # p t.id
