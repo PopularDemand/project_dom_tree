@@ -2,12 +2,15 @@ require_relative 'tag_parser'
 
 DOM_NODES = /(<.*?>)?(.+?)(?=<)(<\/.*?>)?/
 
+VOID_ELEMENTS = "area, base, br, col, command, embed, hr, img, input, keygen, link, meta, param, source, track, wbr".split(', ')
+
 def store_tags(html)
   nodes = html.scan(DOM_NODES)
 
   parent_stack = []
 
   p nodes
+  puts nodes
 
   nodes.each do |arr|
     if arr[0]
@@ -64,7 +67,8 @@ html_string = test
 puts " "
 p store_tags(html_string)
 
-
+# ignores line breaks only:
+# /<(.*?)>/m
 
 # STACK:
 # >top
@@ -81,3 +85,20 @@ p store_tags(html_string)
 #     DIV > P > text
 
 #     DIV
+
+# <div class="asdf">  div text before  <p>    p text  </p>  <div>  <p class="inner">    p text  </p>  more div text  </div>  div text after</div>.scan(regex)
+
+# TYPE_RX = /<(.+?)( |>)/
+# ATTR_RX = /([a-z_\-]+)=("|')([^'"]+)("|')/
+# <.*?>(.*)(<.*?>|<\/.*?>)
+
+# (<(.*?)>(.*?)|[a-z]+ ?)
+
+# (<.*?>)(.+)(<.*>)
+# (?<=>)(.*?)(?=<)  // just text nodes
+
+# // captures tags and content in arrays
+# ((<.*?>)|(.+?))(?=<)(<\/.*?>)?
+
+# [<div class="asdf">][  div text before  ][<p>][    p text  ][</p>]
+#   <div>  <p class="inner">    p text  </p>  more div text  </div>  div text after</div>
