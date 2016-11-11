@@ -8,37 +8,42 @@ class DOMTree
 
   def initialize
     @root = Node.new()
+    @parent_stack = []
   end
 
   def build_tree(html)
     nodes = html.scan(DOM_NODES)
     root = Node.new
-    parent_stack = []
 
     nodes.each do |arr|
-      if arr[0] # if there is an opening tag
-        node = parse_tag(arr[0]) # build a node for the tag
-        set_parent_child(parent_stack[-1], node)
-        node.children = [] # it defaults to array child
-        parent_stack << node unless VOID_ELEMENTS.include?(node.type)# this becomes the next parent
-      end
-
-      unless arr[1].strip.empty?
-        node = Node.new(nil, nil, nil, nil, parent_stack[-1], nil, arr[1].strip) # make a new text node
-        set_parent_child(parent_stack[-1], node)
-        # notable omission: do not set as parent
-      end
-
-      if arr[2]
-        root = parent_stack.pop
-      end
+      root = build_node(arr)
     end
 
     @root = root # return root of dom
   end
 
-  def parse_tag(str)
+  private
 
+  def build_node(arr)
+    if arr[0] # if there is an opening tag
+      node = parse_tag(arr[0]) # build a node for the tag
+      set_parent_child(@parent_stack[-1], node)
+      node.children = [] # it defaults to array child
+      @parent_stack << node unless VOID_ELEMENTS.include?(node.type)# this becomes the next parent
+    end
+
+    unless arr[1].strip.empty?
+      node = Node.new(nil, nil, nil, nil, @parent_stack[-1], nil, arr[1].strip) # make a new text node
+      set_parent_child(@parent_stack[-1], node)
+      # notable omission: do not set as parent
+    end
+
+    if arr[2]
+      @root = @parent_stack.pop
+    end
+  end
+
+  def parse_tag(str)
     type = str.match(TYPE_RX)[1]
     attrs = str.scan(ATTR_RX)
     attr_hash = Hash.new()
@@ -59,6 +64,3 @@ class DOMTree
     end
   end
 end
-
-dt = DOMTree.new
-p dt.build_tree('<html> <head> </head> <body> <p> text node </p> </body> </html>')
